@@ -19,7 +19,7 @@ pytest-xdist = "^3.5.0"
 pytest-sugar = "^1.0.0"
 fastapi = "^0.110.1"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
-qrcode = "^7.4.2"
+segno = "^1.6.1"
 
 
 [build-system]
