@@ -20,6 +20,7 @@ pytest-sugar = "^1.0.0"
 fastapi = "^0.110.1"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
 segno = "^1.6.1"
+tomlkit = "^0.12.4"
 
 
 [build-system]
