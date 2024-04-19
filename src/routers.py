@@ -1,8 +1,12 @@
 """Define QR code related operations for FastAPI application."""
 
-from fastapi import APIRouter, Response
+import logging
+
+from fastapi import APIRouter, HTTPException, Response
 
 from .qrcode_generator import QRCode
+
+logger = logging.getLogger(__name__)
 
 qrcode_router = APIRouter(prefix="/qrcode", tags=["QR Codes"])
 
@@ -13,7 +17,7 @@ qrcode_router = APIRouter(prefix="/qrcode", tags=["QR Codes"])
     responses={201: {"content": {"image/png": {}}}},
     response_class=Response,
 )
-def create_qrcode(content: str) -> Response:
+async def create_qrcode(content: str) -> Response:
     """
     Create a QR code image from the provided content.
 
@@ -27,6 +31,24 @@ def create_qrcode(content: str) -> Response:
     Response
         A FastAPI Response object containing the generated QR code image as PNG.
     """
-    qr_code = QRCode(content)
-    qr_byte_stream = qr_code.make()
+    logger.debug("Received request to generate QR code with content: %s", content)
+
+    try:
+        qr_code = QRCode(content)
+    except ValueError as error:
+        logger.error("Invalid content recieved %s", content, exc_info=True)
+        raise HTTPException(status_code=400, detail=str(error))
+
+    try:
+        qr_byte_stream = qr_code.make()
+    except Exception:
+        logger.critical(
+            "An unknow error happened while creating QR Code", exc_info=True
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error occurred while generating QR code. "
+            "Please try again or contact administration."
+        )
+
     return Response(content=qr_byte_stream.getvalue(), media_type="image/png")
