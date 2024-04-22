@@ -48,7 +48,7 @@ async def create_qrcode(content: str) -> Response:
         raise HTTPException(
             status_code=500,
             detail="Internal server error occurred while generating QR code. "
-            "Please try again or contact administration."
+            "Please try again or contact administration.",
         )
 
     return Response(content=qr_byte_stream.getvalue(), media_type="image/png")
