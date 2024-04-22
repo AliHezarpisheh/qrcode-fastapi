@@ -2,7 +2,7 @@
 
 import logging
 
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, status
 
 from .qrcode_generator import QRCode
 
@@ -13,7 +13,7 @@ qrcode_router = APIRouter(prefix="/qrcode", tags=["QR Codes"])
 
 @qrcode_router.post(
     "/",
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     responses={201: {"content": {"image/png": {}}}},
     response_class=Response,
 )
@@ -36,14 +36,14 @@ async def create_qrcode(content: str) -> Response:
     try:
         qr_code = QRCode(content)
     except ValueError as error:
-        logger.error("Invalid content recieved %s", content, exc_info=True)
+        logger.error("Invalid content received %s", content, exc_info=True)
         raise HTTPException(status_code=400, detail=str(error))
 
     try:
         qr_byte_stream = qr_code.make()
     except Exception:
         logger.critical(
-            "An unknow error happened while creating QR Code", exc_info=True
+            "An unknown error happened while creating QR Code", exc_info=True
         )
         raise HTTPException(
             status_code=500,
@@ -51,4 +51,6 @@ async def create_qrcode(content: str) -> Response:
             "Please try again or contact administration.",
         )
 
-    return Response(content=qr_byte_stream.getvalue(), media_type="image/png")
+    return Response(
+        status_code=201, content=qr_byte_stream.getvalue(), media_type="image/png"
+    )
