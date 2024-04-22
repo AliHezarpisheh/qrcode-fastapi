@@ -109,7 +109,6 @@ docker-compose.yml
 ### Sphinx documentation ###
 docs/_build/
 
-warehouse/tests/querysets/test_A.py
 cache/
 artifacts/
 logs/

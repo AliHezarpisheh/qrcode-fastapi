@@ -1,5 +1,5 @@
 version = 1
-disable_existing_loggers = false
+disable_existing_loggers = true
 
 [formatters.coreFormatter]
 format = "%(asctime)s - %(levelname)s - Thread: %(thread)d - Process: %(process)d - %(name)s - %(message)s"
